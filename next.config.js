@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 
-// Configuration des en-têtes de sécurité
+// Configuration des en-têtes de sécurité selon les meilleures pratiques
 const securityHeaders = [
   // Protection contre le MIME-sniffing
   {
@@ -18,7 +18,7 @@ const securityHeaders = [
     value: '1; mode=block',
   },
   // Politique de sécurité du contenu (CSP)
-  // Note: Adaptez cette politique en fonction des besoins de votre application
+  // Optimisée selon les recommandations de Context7
   {
     key: 'Content-Security-Policy',
     value: [
@@ -27,12 +27,14 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' data: blob: https:",
       "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
-      "connect-src 'self' https:",
+      "connect-src 'self' https: wss:",
       "media-src 'self'",
       "object-src 'none'",
       "frame-ancestors 'none'",
       "form-action 'self'",
-      "base-uri 'self'"
+      "base-uri 'self'",
+      "upgrade-insecure-requests",
+      "block-all-mixed-content"
     ].join('; '),
   },
   // Référent Policy
@@ -45,6 +47,12 @@ const securityHeaders = [
     key: 'Permissions-Policy',
     value: 'camera=(), microphone=(), geolocation=()',
   },
+  // Permissions Policy (remplacement moderne de Feature-Policy)
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=(), interest-cohort=(), autoplay=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(self), picture-in-picture=(self), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), xr-spatial-tracking=()',
+  },
+  
   // Feature Policy (obsolète mais maintenu pour la compatibilité)
   {
     key: 'Feature-Policy',

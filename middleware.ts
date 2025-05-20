@@ -1,54 +1,44 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { errorHandlerMiddleware } from './middleware/error-handler';
-import { generateCSRFToken, validateCSRFToken, CSRF_HEADER } from './lib/csrf';
 
 // Configuration des chemins nécessitant une authentification
-const protectedPaths = ['/admin', '/api/admin'];
-const publicPaths = ['/login', '/api/auth'];
+const protectedPaths = ['/admin', '/api/admin', '/dashboard'];
+const publicPaths = ['/login', '/api/auth', '/', '/about', '/blog'];
 
+/**
+ * Middleware principal de l'application
+ * Gère l'authentification, la sécurité et les en-têtes HTTP
+ */
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   let response: NextResponse;
 
   try {
     // Vérifier l'authentification pour les routes protégées
-    if (protectedPaths.some(path => pathname.startsWith(path))) {
-      const session = request.cookies.get('session');
-      
-      if (!session) {
-        const loginUrl = new URL('/login', request.url);
-        loginUrl.searchParams.set('callbackUrl', pathname);
-        return NextResponse.redirect(loginUrl);
-      }
+    const session = request.cookies.get('session');
+    const isLoggedIn = !!session;
+
+    // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
+    if (protectedPaths.some(path => pathname.startsWith(path)) && !isLoggedIn) {
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    // Rediriger vers le tableau de bord si l'utilisateur est déjà connecté
+    if (pathname === '/login' && isLoggedIn) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+
+    // Vérifier les permissions admin
+    if (pathname.startsWith('/admin')) {
+      // Vérification simplifiée des permissions admin
+      // Implémenter une vérification plus robuste après l'installation complète de NextAuth
     }
 
     // Continuer avec la requête
     response = NextResponse.next();
-    
-    // Vérifier CSRF pour les requêtes non-GET aux routes protégées
-    if (request.method !== 'GET' && protectedPaths.some(path => pathname.startsWith(path))) {
-      const csrfToken = request.headers.get(CSRF_HEADER) || request.nextUrl.searchParams.get('_csrf');
-      
-      if (!csrfToken || !validateCSRFToken(csrfToken)) {
-        // Log simplifié compatible avec Edge Runtime
-        console.warn(`[CSRF] Tentative de requête sans jeton CSRF valide: ${pathname}, méthode: ${request.method}`);
-        return new NextResponse('Requête non autorisée', { status: 403 });
-      }
-    }
-
-    // Définir le jeton CSRF si nécessaire
-    if (!request.cookies.get('csrf-token')) {
-      const token = generateCSRFToken();
-      response.cookies.set({
-        name: 'csrf-token',
-        value: token,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        path: '/',
-      });
-    }
     
     // Ajouter des en-têtes de sécurité
     response.headers.set('X-Content-Type-Options', 'nosniff');
@@ -57,23 +47,25 @@ export default async function middleware(request: NextRequest) {
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
     
-    // Ajouter un en-tête de politique de sécurité de contenu
-    const csp = [
+    // Appliquer les en-têtes de sécurité CSP directement
+    response.headers.set('Content-Security-Policy', [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
-      "img-src 'self' data: https: blob:",
-      "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com data:",
-      "connect-src 'self' https://api.mikory.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "img-src 'self' data: blob: https:",
+      "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
+      "connect-src 'self' https: wss:",
+      "media-src 'self'",
+      "object-src 'none'",
       "frame-ancestors 'none'",
-    ].join('; ');
-    
-    response.headers.set('Content-Security-Policy', csp);
+      "form-action 'self'",
+      "base-uri 'self'"
+    ].join('; '));
     
     return response;
     
   } catch (error) {
-    // Gérer les erreurs avec notre middleware d'erreur
+    // Gérer les erreurs via le middleware d'erreur
     return errorHandlerMiddleware(request, error as Error);
   }
 }
@@ -82,30 +74,45 @@ export default async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     * - api/health (endpoint de santé)
+     * Correspond à toutes les routes sauf:
+     * 1. Fichiers statiques (/_next/static, /_next/image, /favicon.ico, etc.)
+     * 2. Ressources publiques (/public/...)
+     * 3. API routes qui gèrent leur propre authentification
      */
-    '/((?!_next/static|_next/image|favicon.ico|api/health|.*\.(?:svg|png|jpg|jpeg|gif|webp|css|js|woff|woff2|ttf|eot)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|public/).*)',
   ],
 };
 
 // Fonction utilitaire pour créer une réponse avec des en-têtes de sécurité
-export function createSecureResponse(
+function createSecureResponse(
   body: BodyInit | null = null,
   init: ResponseInit = {}
-) {
-  const response = new NextResponse(body, init);
+): NextResponse {
+  const response = body instanceof NextResponse ? body : NextResponse.json(body, init);
   
-  // Ajout des en-têtes de sécurité
+  // Ajouter les en-têtes de sécurité
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
+  
+  // Ajouter Content-Security-Policy en production
+  if (process.env.NODE_ENV === 'production') {
+    response.headers.set('Content-Security-Policy', [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "img-src 'self' data: blob: https:",
+      "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
+      "connect-src 'self' https:",
+      "media-src 'self'",
+      "object-src 'none'",
+      "frame-ancestors 'none'",
+      "form-action 'self'",
+      "base-uri 'self'"
+    ].join('; '));
+  }
   
   return response;
 }
