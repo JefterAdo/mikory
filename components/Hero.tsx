@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import CustomImage from "./ui/CustomImage";
 
 export default function Hero() {
   return (
@@ -42,16 +42,18 @@ export default function Hero() {
           </div>
 
           {/* Image/Animation */}
-          <div className="hidden lg:block relative">
-            <div className="relative w-full h-[600px]">
-              <Image
-                src="/images/hero-image.webp"
-                alt="Digital Marketing"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
+          <div className="hidden lg:block w-full h-[600px]">
+            <CustomImage
+              src="/images/hero-image.webp"
+              alt="Marketing Digital et création de sites web en Côte d'Ivoire"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-contain"
+              priority
+              quality={85}
+              loading="eager"
+              disableHoverEffect
+            />
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
+import "@/styles/quill-dark.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -28,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className={`${inter.variable} ${poppins.variable}`}>
-      <body className="bg-dark text-white">
+      <body className="bg-mikory-dark text-white">
         <Navbar />
         {children}
         <Footer />

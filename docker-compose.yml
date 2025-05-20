@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mikory_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mikory_cms
+      MYSQL_USER: mikory_user
+      MYSQL_PASSWORD: mikory_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mikory_network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - mikory_network
+
+networks:
+  mikory_network:
+    driver: bridge
+
+volumes:
+  mysql_data:

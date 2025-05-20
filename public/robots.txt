@@ -1,0 +1,6 @@
+# Robots.txt pour Mikory
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://mikory.com/sitemap.xml

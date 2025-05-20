@@ -1,5 +1,5 @@
 import React from "react";
-import Image from "next/image";
+import CustomImage from "./ui/CustomImage";
 
 const projects = [
   {
@@ -46,14 +46,16 @@ export default function Projects() {
               key={idx}
               className="bg-mikory-dark rounded-lg overflow-hidden shadow-lg border border-gray-800 hover:border-primary transition-colors duration-300"
             >
-              <div className="relative w-full h-64">
-                <Image
+              <div className="w-full h-64">
+                <CustomImage
                   src={project.image}
-                  alt={project.title}
+                  alt={`Projet : ${project.title} - ${project.description}`}
                   fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  priority={idx === 0}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  priority={idx < 3}
+                  quality={80}
+                  loading={idx < 3 ? 'eager' : 'lazy'}
+                  containerClassName="h-full w-full"
                 />
               </div>
               <div className="p-6">

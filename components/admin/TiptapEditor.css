@@ -1,0 +1,134 @@
+/* Styles pour l'éditeur Tiptap */
+.tiptap-editor {
+  /* Styles de base */
+  font-family: 'Inter', sans-serif;
+  color: white;
+}
+
+/* Styles pour le contenu de l'éditeur */
+.tiptap-editor .ProseMirror {
+  min-height: 400px;
+  outline: none;
+  padding: 1rem;
+}
+
+/* Styles pour les paragraphes */
+.tiptap-editor .ProseMirror p {
+  margin-bottom: 1rem;
+}
+
+/* Styles pour les titres */
+.tiptap-editor .ProseMirror h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+}
+
+.tiptap-editor .ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.tiptap-editor .ProseMirror h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Styles pour les listes */
+.tiptap-editor .ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.tiptap-editor .ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.tiptap-editor .ProseMirror li {
+  margin-bottom: 0.25rem;
+}
+
+/* Styles pour les citations */
+.tiptap-editor .ProseMirror blockquote {
+  border-left: 3px solid #4a5568;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: #a0aec0;
+}
+
+/* Styles pour les blocs de code */
+.tiptap-editor .ProseMirror pre {
+  background-color: #1a202c;
+  color: #e2e8f0;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.tiptap-editor .ProseMirror code {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9em;
+}
+
+/* Styles pour les liens */
+.tiptap-editor .ProseMirror a {
+  color: #4299e1;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Styles pour les images */
+.tiptap-editor .ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
+  margin: 1rem 0;
+}
+
+/* Styles pour le focus */
+.tiptap-editor .ProseMirror:focus {
+  outline: none;
+}
+
+/* Styles pour le placeholder */
+.tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #64748b;
+  pointer-events: none;
+  height: 0;
+}
+
+/* Styles pour l'alignement du texte */
+.tiptap-editor .ProseMirror .text-left {
+  text-align: left;
+}
+
+.tiptap-editor .ProseMirror .text-center {
+  text-align: center;
+}
+
+.tiptap-editor .ProseMirror .text-right {
+  text-align: right;
+}
+
+/* Styles pour la barre d'outils */
+.tiptap-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  background-color: #1f2937;
+  border-bottom: 1px solid #374151;
+  padding: 0.5rem;
+}

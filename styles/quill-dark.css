@@ -1,0 +1,139 @@
+/* Styles personnalisés pour l'éditeur Quill en mode sombre */
+
+/* Conteneur principal */
+.quill-editor-dark .ql-container {
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Barre d'outils */
+.quill-editor-dark .ql-toolbar {
+  background-color: #1a1a1a;
+  border-color: #444;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+/* Conteneur de l'éditeur */
+.quill-editor-dark .ql-editor {
+  background-color: #111;
+  color: #fff;
+  min-height: 300px;
+}
+
+/* Boutons de la barre d'outils */
+.quill-editor-dark .ql-toolbar button {
+  color: #ccc;
+}
+
+.quill-editor-dark .ql-toolbar button:hover {
+  color: #fff;
+}
+
+.quill-editor-dark .ql-toolbar button.ql-active,
+.quill-editor-dark .ql-toolbar .ql-picker-label.ql-active,
+.quill-editor-dark .ql-toolbar .ql-picker-item.ql-selected {
+  color: #ff0000; /* Couleur primaire Mikory */
+}
+
+/* Icônes SVG */
+.quill-editor-dark .ql-toolbar button svg {
+  filter: invert(1);
+}
+
+.quill-editor-dark .ql-toolbar button.ql-active svg,
+.quill-editor-dark .ql-toolbar button:hover svg {
+  filter: invert(1) sepia(1) saturate(5) hue-rotate(0deg);
+}
+
+/* Menus déroulants */
+.quill-editor-dark .ql-toolbar .ql-picker {
+  color: #ccc;
+}
+
+.quill-editor-dark .ql-toolbar .ql-picker-options {
+  background-color: #222;
+  border-color: #444;
+}
+
+.quill-editor-dark .ql-toolbar .ql-picker-item:hover {
+  color: #ff0000; /* Couleur primaire Mikory */
+}
+
+/* Placeholder */
+.quill-editor-dark .ql-editor.ql-blank::before {
+  color: #666;
+}
+
+/* Liens */
+.quill-editor-dark .ql-editor a {
+  color: #ff3333; /* Mikory red light */
+}
+
+/* Code */
+.quill-editor-dark .ql-editor pre.ql-syntax {
+  background-color: #2d2d2d;
+  color: #f8f8f2;
+  border-radius: 0.25rem;
+}
+
+/* Bordures */
+.quill-editor-dark .ql-container {
+  border-color: #444;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+/* Tooltip */
+.quill-editor-dark .ql-tooltip {
+  background-color: #222;
+  border-color: #444;
+  color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.quill-editor-dark .ql-tooltip input[type="text"] {
+  background-color: #333;
+  border-color: #555;
+  color: #fff;
+}
+
+.quill-editor-dark .ql-tooltip a.ql-action,
+.quill-editor-dark .ql-tooltip a.ql-remove {
+  color: #ff0000; /* Couleur primaire Mikory */
+}
+
+/* Styles pour les éléments de contenu */
+.quill-editor-dark .ql-editor h1,
+.quill-editor-dark .ql-editor h2,
+.quill-editor-dark .ql-editor h3,
+.quill-editor-dark .ql-editor h4,
+.quill-editor-dark .ql-editor h5,
+.quill-editor-dark .ql-editor h6 {
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.quill-editor-dark .ql-editor p {
+  margin-bottom: 1rem;
+}
+
+.quill-editor-dark .ql-editor blockquote {
+  border-left: 4px solid #ff0000; /* Couleur primaire Mikory */
+  padding-left: 1rem;
+  color: #ccc;
+}
+
+.quill-editor-dark .ql-editor ul,
+.quill-editor-dark .ql-editor ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.quill-editor-dark .ql-editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
+}

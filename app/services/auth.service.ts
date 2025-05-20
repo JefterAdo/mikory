@@ -1,5 +1,3 @@
-const API_URL = "http://localhost:3001";
-
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -18,7 +16,7 @@ export interface AuthResponse {
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await fetch(`${API_URL}/auth/login`, {
+    const response = await fetch(`/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
