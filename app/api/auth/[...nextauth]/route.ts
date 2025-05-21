@@ -53,7 +53,7 @@ export const {
           return {
             id: user.id,
             email: user.email,
-            name: user.name || user.username,
+            name: user.name,
             role: user.role,
           };
         } catch (error) {
